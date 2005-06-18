@@ -14,7 +14,7 @@ subs::parallel - enables subroutines to seamlessly run in parallel
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
@@ -22,7 +22,7 @@ require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(parallelyze parallelyze_sub parallelyze_coderef);
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use overload 
 	'""'  => \&_deref,
@@ -356,7 +356,7 @@ known bugs.
 
 Please report any bugs or feature requests to
 C<bug-subs-parallel@rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=subs-parallel-0.04>.
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=subs-parallel-0.05>.
 I will be notified, and then you'll automatically be notified of progress on
 your bug as I make changes.
 

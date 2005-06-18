@@ -17,5 +17,5 @@ WriteMakefile(
 		'Exporter' => 0
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => 'subs-parallel-0.04-*' },
+    clean               => { FILES => 'subs-parallel-0.05-*' },
 );
