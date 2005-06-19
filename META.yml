@@ -1,8 +1,8 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         subs-parallel
-version:      0.05
-version_from: lib\subs\parallel.pm
+version:      0.06
+version_from: lib/subs/parallel.pm
 installdirs:  site
 requires:
     Attribute::Handlers:           0

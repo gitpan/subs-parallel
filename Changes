@@ -1,4 +1,10 @@
-Revision history for subs-parallel-0.05
+Revision history for subs-parallel-0.06
+0.06    Sun Jun 19 01:33:00 2005
+        - Fixed the Makefile.pl. It seems that Module::Starter generated a 
+          wrong output file which only works on Windows (paths with '\' instead
+          of '/'). This has been fixed. Thanks to Sébastien Aperghis-Tramoni 
+          (SAPER at cpan.org) for pointing it out.
+
 0.05    Sat Jun 18 09:45:59 2005
         - Fix problems with Pod::Coverage failing on some subs which were the 
           last ones added and should be private. Now it should be successfully

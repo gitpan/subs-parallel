@@ -2,7 +2,7 @@ NAME
     subs::parallel - enables subroutines to seamlessly run in parallel
 
 VERSION
-    Version 0.04
+    Version 0.06
 
 DESCRIPTION
     This module gives Perl programmers the ability to easily and

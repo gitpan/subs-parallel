@@ -5,8 +5,8 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME                => 'subs::parallel',
     AUTHOR              => 'Nilson Santos F. Jr. <nilsonsfj@cpan.org>',
-    VERSION_FROM        => 'lib\subs\parallel.pm',
-    ABSTRACT_FROM       => 'lib\subs\parallel.pm',
+    VERSION_FROM        => 'lib/subs/parallel.pm',
+    ABSTRACT_FROM       => 'lib/subs/parallel.pm',
     PL_FILES            => {},
     PREREQ_PM => {
         'Test::More' => 0,
@@ -17,5 +17,5 @@ WriteMakefile(
 		'Exporter' => 0
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => 'subs-parallel-0.05-*' },
+    clean               => { FILES => 'subs-parallel-0.06-*' },
 );
