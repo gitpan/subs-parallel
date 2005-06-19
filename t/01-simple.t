@@ -36,7 +36,7 @@ ok($bool);
 eval('use IO::Handle');
 if ($@) { ok(1, 'skipped') }
 else {
-	my $io = parallelyze { new IO::Handle };
+	my $io = parallelize { new IO::Handle };
 	ok("$io" && ref($io) eq 'IO::Handle');
 }
 

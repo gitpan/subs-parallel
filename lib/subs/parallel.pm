@@ -14,15 +14,15 @@ subs::parallel - enables subroutines to seamlessly run in parallel
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 =cut
 
 require Exporter;
 @ISA = qw(Exporter);
-@EXPORT = qw(parallelyze parallelyze_sub parallelyze_coderef);
+@EXPORT = qw(parallelize parallelize_sub parallelize_coderef);
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use overload 
 	'""'  => \&_deref,
@@ -43,7 +43,7 @@ use overload
     # foo runs in parallel
   }
   
-  parallelyze_sub('bar'); 
+  parallelize_sub('bar'); 
   # subroutine named bar now runs in parallel
   
   my $foo = foo(); # returns immediately
@@ -55,7 +55,7 @@ use overload
   }
   
   
-  my $baz = parallelyze { ... code ... }; # returns immediately
+  my $baz = parallelize { ... code ... }; # returns immediately
   
   ...
   
@@ -64,7 +64,7 @@ use overload
   
   # it can be done to anonymous subs or any other coderefs too
   my $anon = sub { ... more code ... };
-  my $parallel_coderef = parallelyze_coderef($anon);
+  my $parallel_coderef = parallelize_coderef($anon);
 
   my $foobar = $parallel_coderef->('arg'); # returns immediately
   
@@ -105,7 +105,7 @@ the use of threads (you can't pass arbitrary data structures between threads).
 
 The latter issue is out of my reach. But, through the use of already existing
 features, it was possible to mask it a little bit. So you can return anything
-from your parallelyzed subroutines, but this is just some maybe unknown feature
+from your parallelized subroutines, but this is just some maybe unknown feature
 of C<threads->join>.
 
 The first issue is the main aim of this module: provide an extremely simple way
@@ -128,12 +128,12 @@ This snippet ilustrates how to do it:
   }
 
 That way, C<foobar> is declared as a B<parallel subroutine>. This should have 
-exactly the same effect as using the C<parallelyze_sub> below, but is cleaner
+exactly the same effect as using the C<parallelize_sub> below, but is cleaner
 and more convenient.
 
 =head1 EXPORTS
 
-The C<parallelyze>, C<parallelyze_sub> and C<parallelyze_coderef> subroutines
+The C<parallelize>, C<parallelize_sub> and C<parallelize_coderef> subroutines
 are exported. If you have problems with that, you're free to:
 
   use subs::parallel ();
@@ -141,21 +141,21 @@ are exported. If you have problems with that, you're free to:
 =head1 FUNCTIONS
 
 All the three functions available work similarly, implementing the idea of 
-B<parallelyzed subroutines> as explained above. Nevertheless, here's a brief
+B<parallelized subroutines> as explained above. Nevertheless, here's a brief
 explanation of each of them.
 
-=head2 parallelyze { BLOCK }
+=head2 parallelize { BLOCK }
 
 Starts running the specified block of code in parallel B<immediately>.
 The snippet below ilustrates this concept:
 
   use subs::parallel;
 
-  my $foo = parallelyze {
+  my $foo = parallelize {
     # do stuff here
   };
 
-  my $bar = parallelyze {
+  my $bar = parallelize {
     # do even more stuff
   };
 
@@ -164,10 +164,10 @@ The snippet below ilustrates this concept:
 
 =cut
 
-# parallelyzes and runs a block of code / coderef
-sub parallelyze (&) { parallelyze_coderef(shift)->() }
+# parallelizes and runs a block of code / coderef
+sub parallelize (&) { parallelize_coderef(shift)->() }
 
-=head2 parallelyze_sub(STRING)
+=head2 parallelize_sub(STRING)
 
 Transforms the named subroutine into a B<parallel subroutine>. After this 
 modification, every it's called, it will run inside another thread and return
@@ -183,19 +183,19 @@ The snippet below ilustrates this concept:
 
   blocking_stuff(); # this blocks
 
-  parallelyze_sub('blocking_stuff');
+  parallelize_sub('blocking_stuff');
   
   blocking_stuff();
   # now it returns immediately and the return values are discarded
 
-Note that, you can I<parallelyze> named subroutines inside other packages:
+Note that, you can I<parallelize> named subroutines inside other packages:
 
-  parallelyze_sub('Other::Package::function');
+  parallelize_sub('Other::Package::function');
 
 =cut
 
 # parallelyzing subroutines by name
-sub parallelyze_sub {
+sub parallelize_sub {
 	my ($sub) = @_;
 	
 	# only prepend caller package if it's fully qualified
@@ -209,27 +209,27 @@ sub parallelyze_sub {
 	no strict 'refs';
 	no warnings 'redefine';
 
-	croak("can't parallelyze non-existant subroutine") unless defined *{$sub}{CODE};
+	croak("can't parallelize non-existant subroutine") unless defined *{$sub}{CODE};
 	
 	# keeps the prototype
-	*$sub = &set_prototype(parallelyze_coderef(\&$sub), prototype($sub));
+	*$sub = &set_prototype(parallelize_coderef(\&$sub), prototype($sub));
 }
 
-=head2 parallelyze_coderef(CODEREF)
+=head2 parallelize_coderef(CODEREF)
 
-Returns a parallelyzed version of the given CODEREF. This function is used 
+Returns a parallelized version of the given CODEREF. This function is used 
 internally to implement the other two functions explained above.
 
   my $code = sub { ... }
-  my $parallel = parallelyze_coderef($code);
+  my $parallel = parallelize_coderef($code);
 
   my $return = $parallel->(@args); # runs in another thread
 
 =cut
 
-# returns a new coderef: a parallelyzed version of the original coderef
+# returns a new coderef: a parallelized version of the original coderef
 # the original is *not* modified
-sub parallelyze_coderef {
+sub parallelize_coderef {
 	my ($coderef) = @_;
 
 	return sub {
@@ -246,7 +246,7 @@ sub UNIVERSAL::Parallel : ATTR(CODE) {
 
 	no warnings 'redefine';
 	# keeps the prototype
-	*$symtable = &set_prototype(parallelyze_coderef($coderef), prototype($coderef));
+	*$symtable = &set_prototype(parallelize_coderef($coderef), prototype($coderef));
 }
 
 # the overload handler
@@ -322,13 +322,13 @@ executing thread must have its class properly included. This means that you
 can't require a module only inside a subroutine and then return an object 
 blessed into that class to the calling thread. 
 
-You shouldn't pass to another thread/parallelyzed subroutines previous return
-values from other parallelyzed subroutines without reading their values. And,
+You shouldn't pass to another thread/parallelized subroutines previous return
+values from other parallelized subroutines without reading their values. And,
 while you can get away with it, it's probably too much rope to hang yourself on
 when things start to get ugly. This might be changed in the future, but would
 require some sort of explicit synchronization through shared variables.
 
-Also, there's no way to tell if a parallelyzed subroutine is still running or 
+Also, there's no way to tell if a parallelized subroutine is still running or 
 not. This probably will be changed in the future but, unfortunately, will 
 require either a minimalistic approach using some simple shared variables or 
 the use of Thread::Running, which would be another dependency and ends up using
@@ -341,7 +341,7 @@ if the user called a non-existant method, he wouldn't get the default warning.
 In the future, maybe this will be configurable so that if you need to rely on
 the caller stack, you can make this trade-off.
 
-If the I<parallelyzed> subroutine dies, you won't get any warnings on notices
+If the I<parallelized> subroutine dies, you won't get any warnings on notices
 of any kind. It would be like it returned C<undef>. This might change in the 
 future.
 
@@ -356,7 +356,7 @@ known bugs.
 
 Please report any bugs or feature requests to
 C<bug-subs-parallel@rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=subs-parallel-0.06>.
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=subs-parallel-0.07>.
 I will be notified, and then you'll automatically be notified of progress on
 your bug as I make changes.
 
