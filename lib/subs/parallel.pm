@@ -14,7 +14,7 @@ subs::parallel - enables subroutines to seamlessly run in parallel
 
 =head1 VERSION
 
-Version 0.07
+Version 0.08
 
 =cut
 
@@ -22,7 +22,7 @@ require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(parallelize parallelize_sub parallelize_coderef);
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use overload 
 	'""'  => \&_deref,
@@ -87,7 +87,7 @@ value and keep being transparent).
 
 So, as it's possible to notice, the module interface aims to be as simple 
 as possible. In fact, it works in such a way that, aside from the 
-I<parallelyzing> directives, you wouldn't be able to tell it's a multi-threaded 
+I<parallelizing> directives, you wouldn't be able to tell it's a multi-threaded 
 application. All the thread handling (which isn't I<that> complicated, really) 
 is done automagically.
 
@@ -194,12 +194,12 @@ Note that, you can I<parallelize> named subroutines inside other packages:
 
 =cut
 
-# parallelyzing subroutines by name
+# parallelizing subroutines by name
 sub parallelize_sub {
 	my ($sub) = @_;
 	
 	# only prepend caller package if it's fully qualified
-	# allows easy parallelyzing of subroutines inside other packages
+	# allows easy parallelizing of subroutines inside other packages
 	if ($sub !~ /::/) {
 		my ($caller) = caller();
 		$sub = join('::', $caller, $sub);
@@ -239,7 +239,7 @@ sub parallelize_coderef {
 	};
 }
 
-# support for parallelyzing through subroutine attributes
+# support for parallelizing through subroutine attributes
 sub UNIVERSAL::Parallel : ATTR(CODE) {
 	# for completeness sake, let's have the whole prototype
 	my ($caller, $symtable, $coderef, $attr, $data, $phase) = @_;
@@ -300,7 +300,7 @@ sub DESTROY {
 }
 
 # provide overriden ref() function
-sub ref {
+sub ref ($) {
 	return CORE::ref($_[0]) if CORE::ref($_[0]) ne __PACKAGE__;
 	return CORE::ref($_[0]->_deref);
 }
@@ -309,6 +309,29 @@ sub ref {
 1;
 
 # ok, i didn't tie anything. oh well, can't use them all...
+
+=head1 INTERACTION WITH OTHER MODULES
+
+The only B<known> issue is between this module and L<Catalyst>. When using 
+L<Catalyst> the C<Parallel> attribute seems to be broken. This is probably due
+to L<Catalyst> trying to process every possible attribute, but I'm not really
+sure. Patches are welcome.
+
+There's a simple workaround. Instead of writing:
+
+  sub foo : Parallel {
+      # code here
+  }
+
+Use the slightly more verbose:
+
+  sub foo {
+      # code here
+  }
+
+  parallelize_sub('foo');
+
+That should work in all cases.
 
 =head1 CAVEATS
 
@@ -356,7 +379,7 @@ known bugs.
 
 Please report any bugs or feature requests to
 C<bug-subs-parallel@rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=subs-parallel-0.07>.
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=subs-parallel-0.08>.
 I will be notified, and then you'll automatically be notified of progress on
 your bug as I make changes.
 
@@ -366,7 +389,7 @@ Nilson Santos F. Jr., C<< <nilsonsfj@cpan.org> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2005 Nilson Santos F. Jr., All Rights Reserved.
+Copyright (C) 2005-2007 Nilson Santos Figueiredo Júnior.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

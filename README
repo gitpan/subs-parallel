@@ -2,7 +2,7 @@ NAME
     subs::parallel - enables subroutines to seamlessly run in parallel
 
 VERSION
-    Version 0.07
+    Version 0.08
 
 DESCRIPTION
     This module gives Perl programmers the ability to easily and
@@ -62,7 +62,7 @@ COPYRIGHT AND LICENCE
 
 Put the correct copyright and licence information here.
 
-Copyright (C) 2005 Nilson Santos F. Jr.
+Copyright (C) 2005-2007 Nilson Santos Figueiredo Júnior
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

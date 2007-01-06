@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME                => 'subs::parallel',
-    AUTHOR              => 'Nilson Santos F. Jr. <nilsonsfj@cpan.org>',
+    AUTHOR              => 'Nilson Santos Figueiredo Júnior <nilsonsfj@cpan.org>',
     VERSION_FROM        => 'lib/subs/parallel.pm',
     ABSTRACT_FROM       => 'lib/subs/parallel.pm',
     PL_FILES            => {},
@@ -17,5 +17,5 @@ WriteMakefile(
 		'Exporter' => 0
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => 'subs-parallel-0.07-*' },
+    clean               => { FILES => 'subs-parallel-*' },
 );
